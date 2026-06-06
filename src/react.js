@@ -1,7 +1,6 @@
 import { REACT_ELEMENT, REACT_FORWARD_REF, toVNode } from "./utils";
 import { Component } from "./Component";
 function createElement(type, properties, children) {
-  debugger
   ["__self", "__source"].forEach((key) => {
     delete properties[key];
   });
@@ -9,7 +8,7 @@ function createElement(type, properties, children) {
   let key = properties.key || null;
   let props = { ...properties };
   if (arguments.length > 3) {
-    props.children = Array.prototype.slice.call(arguments, 2);
+    props.children = Array.prototype.slice.call(arguments, 2).map(toVNode);
   } else {
     props.children = toVNode(children);
   }
