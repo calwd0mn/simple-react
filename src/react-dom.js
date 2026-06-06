@@ -99,6 +99,7 @@ function getDomByClassComponent(VNode) {
   let { type, props, ref } = VNode;
   let instance = new type(props);
   let renderVNode = instance.render();
+  VNode.classInstance = instance;
   instance.oldVNode = renderVNode;
   ref && (ref.current = instance)
   if (!renderVNode) return null;
@@ -149,15 +150,15 @@ export function updateDomTree(oldVNode, newVNode, oldDOM) {
 function removeVNode(VNode) {
   const currentDOM = findDOMByVNode(VNode);
   if (currentDOM) currentDOM.remove();
-  if (VNode.classInstance && VNode.classInstance.componentDidUnMount) {
-    VNode.classInstance.componentDidUnMount()
+  if (VNode.classInstance && VNode.classInstance.componentWillUnMount) {
+    VNode.classInstance.componentWillUnMount()
   }
 }
 
 function deepDOMDiff(oldVNode, newVNode) {
   let diffTypeMap = {
     ORIGIN_NODE: typeof oldVNode.type === 'string',
-    CLASS_COMPONENT: typeof oldVNode.type === 'function' && oldVNode.type.IS_CLASS_COMPONENT,
+    CLASS_COMPONENT: typeof oldVNode.type === 'function' && oldVNode.type.IS_CLASS,
     FUNCTION_COMPONENT: typeof oldVNode.type === 'function',
     TEXT: oldVNode.type === REACT_TEXT,
   }
