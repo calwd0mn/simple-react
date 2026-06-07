@@ -1,70 +1,120 @@
-# Getting Started with Create React App
+# Simple React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+这是一个用于学习 React 核心原理的练习项目。项目基于 Create React App 搭建，但运行时没有直接使用官方 React 渲染逻辑，而是在 `src` 目录中实现了一套简化版的 React 和 ReactDOM。
 
-## Available Scripts
+项目重点不是生产可用性，而是帮助理解 JSX、虚拟 DOM、组件渲染、DOM Diff、合成事件、类组件更新队列以及常见 Hooks 的基本工作方式。
 
-In the project directory, you can run:
+## 功能概览
 
-### `npm start`
+- JSX 通过 `React.createElement` 转换为虚拟 DOM
+- 支持原生 DOM 节点、文本节点、函数组件和类组件
+- 支持 `ref`、`forwardRef`、`memo`、`PureComponent`
+- 支持简化版 DOM 挂载和更新
+- 支持基于 key 的子节点移动、创建和删除
+- 支持简化版合成事件和批量更新
+- 支持常见 Hooks：
+  - `useState`
+  - `useReducer`
+  - `useEffect`
+  - `useLayoutEffect`
+  - `useRef`
+  - `useImperativeHandle`
+  - `useMemo`
+  - `useCallback`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 目录结构
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```txt
+src/
+  Component.js    类组件基类、setState 更新器、批量更新队列
+  Event.js        合成事件与事件委托
+  hooks.js        Hooks 的简化实现
+  index.js        示例入口
+  react.js        createElement、createRef、memo、forwardRef 等 React API
+  react-dom.js    render、mount、createDOM、DOM Diff 等渲染逻辑
+  utils.js        React 标记常量、文本节点转换、浅比较、深拷贝工具
+```
 
-### `npm test`
+## 快速开始
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+安装依赖：
 
-### `npm run build`
+```powershell
+npm install
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+启动开发服务：
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```powershell
+npm start
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+默认会使用 CRA 的开发服务器。项目脚本中设置了：
 
-### `npm run eject`
+```txt
+DISABLE_NEW_JSX_TRANSFORM=true
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+这样 JSX 会继续编译为 `React.createElement(...)`，方便使用本项目自己实现的 `createElement`。
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 当前示例
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+入口文件在：
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```txt
+src/index.js
+```
 
-## Learn More
+当前示例演示了：
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- `useState` 管理输入框和年龄状态
+- `useMemo` 缓存对象数据
+- `useCallback` 缓存事件处理函数
+- `React.memo` 包裹子组件，观察组件重复渲染情况
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+可以通过修改 `src/index.js` 来切换不同实验场景，例如测试 `useRef`、`forwardRef`、类组件生命周期或 DOM Diff。
 
-### Code Splitting
+## 学习重点
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+建议按下面顺序阅读源码：
 
-### Analyzing the Bundle Size
+1. `src/react.js`：理解 JSX 如何变成虚拟 DOM
+2. `src/react-dom.js`：理解虚拟 DOM 如何变成真实 DOM
+3. `src/Event.js`：理解事件委托、合成事件和批量更新
+4. `src/Component.js`：理解类组件的 `setState` 和更新流程
+5. `src/hooks.js`：理解 Hooks 如何依赖调用顺序保存状态
+6. `src/utils.js`：理解节点类型标记和辅助工具
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 注意事项
 
-### Making a Progressive Web App
+这是教学性质的简化实现，与真实 React 有很多差异：
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- 没有完整 Fiber 架构
+- 没有并发渲染和调度系统
+- Hooks 状态使用全局数组保存，只适合简单示例
+- DOM Diff 只覆盖部分常见场景
+- Fragment、Portal、Context、Suspense 等高级能力未完整实现
+- 错误边界、严格模式和服务端渲染未实现
 
-### Advanced Configuration
+因此它适合作为源码学习练习，不建议用于真实业务项目。
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 测试
 
-### Deployment
+项目中包含少量测试示例：
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```powershell
+npm test
+```
 
-### `npm run build` fails to minify
+测试文件：
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```txt
+src/react.test.js
+```
+
+## 开发约定
+
+- 优先使用 PowerShell 7 执行命令，避免中文编码问题
+- 修改功能时尽量保持小步、单点变更
+- 不要在 TypeScript 中使用 `any` 类型
+- 日志文件 `.codex-dev-server*.log` 已在 `.gitignore` 中忽略

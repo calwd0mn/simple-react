@@ -1,44 +1,25 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
+import React, { useCallback, useMemo, useState } from "./react";
+import ReactDOM from "./react-dom";
 
-class Clock extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { date: new Date() };
-  }
+const Child = React.memo(function Child({ props, handleClick }) {
+  console.log("Child component rendering");
+  return <button onClick={handleClick}>Increase Age</button>;
+});
 
-  componentDidMount() {
-    console.log('componentDidMount');
-
-    this.timerID = setInterval(
-      () => this.tick(),
-      1000
-    );
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timerID);
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    console.log('componentDidUpdate', this.state.date);
-  }
-
-  tick() {
-    this.setState({
-      date: new Date()
-    });
-  }
-
-  render() {
-    return (
-      <div>
-        <h1>Hello, world!</h1>
-        <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
-      </div>
-    );
-  }
+function App() {
+  console.log("App component rendering");
+  const [name, setName] = useState("Simple React");
+  const [age, setAge] = useState(18);
+  const data = useMemo(() => ({ age }), [age]);
+  const handleClick = useCallback(() => {
+    setAge(age + 1);
+  }, [age]);
+  return (
+    <div>
+      <input value={name} onInput={(e) => setName(e.target.value)} />
+      <Child data={data} handleClick={handleClick} />
+    </div>
+  );
 }
 
-const root = createRoot(document.getElementById('root'));
-root.render(<Clock />);
+ReactDOM.render(<App />, document.getElementById("root"));
