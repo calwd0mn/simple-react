@@ -111,10 +111,3 @@ npm test
 ```txt
 src/react.test.js
 ```
-
-## 开发约定
-
-- 优先使用 PowerShell 7 执行命令，避免中文编码问题
-- 修改功能时尽量保持小步、单点变更
-- 不要在 TypeScript 中使用 `any` 类型
-- 日志文件 `.codex-dev-server*.log` 已在 `.gitignore` 中忽略
