@@ -1,5 +1,13 @@
-import { REACT_ELEMENT, REACT_FORWARD_REF, toVNode } from "./utils";
+import {
+  REACT_ELEMENT,
+  REACT_FORWARD_REF,
+  REACT_TEXT,
+  REACT_MEMO,
+  toVNode,
+  shallowEqual,
+} from "./utils";
 import { Component } from "./Component";
+export * from "./hooks";
 function createElement(type, properties, children) {
   ["__self", "__source"].forEach((key) => {
     delete properties[key];
@@ -20,33 +28,43 @@ function createElement(type, properties, children) {
     props,
   };
 }
-const obj = {
-  type: "div",
-  key: null,
-  props: {
-    children: "Hello Simple React",
-  },
-  _owner: null,
-  _store: {},
-};
 
 function createRef() {
   return {
-    current: null
-  }
+    current: null,
+  };
 }
 
 function forwardRef(render) {
   return {
     $$typeof: REACT_FORWARD_REF,
-    render
+    render,
+  };
+}
+
+class PureComponent extends Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return (
+      !shallowEqual(this.props, nextProps) ||
+      !shallowEqual(this.state, nextState)
+    );
   }
+}
+
+function memo(type, compare) {
+  return {
+    $$typeof: REACT_MEMO,
+    type,
+    compare: compare || shallowEqual,
+  };
 }
 
 const React = {
   createElement,
   Component,
   createRef,
-  forwardRef
+  forwardRef,
+  PureComponent,
+  memo,
 };
 export default React;
